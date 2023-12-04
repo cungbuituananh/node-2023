@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "nodemon": "^3.0.2",
+    "uuid": "^9.0.1"
+  },
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "name": "node-2023",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
