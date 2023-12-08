@@ -1,113 +1,57 @@
-// const http = require("http");
-// const path = require("path");
-// const fs = require("fs");
-// const fsPromises = require("fs").promises;
-// const logEvents = require("./logEvents");
-// const EventEmitter = require("events");
-// class Emitter extends EventEmitter {}
-
-// const myEmitter = new Emitter();
-// const PORT = process.env.PORT || 3500;
-
-// myEmitter.on("log", (msg, fileName) => logEvents(msg, fileName));
-
-// const serveFile = async (filePath, contentType, response) => {
-//   try {
-//     const isJsonType = contentType === "application/json";
-
-//     const rawData = await fsPromises.readFile(
-//       filePath,
-//       !contentType.includes("image") ? "utf8" : ""
-//     );
-
-//     const data = isJsonType ? JSON.parse(rawData) : rawData;
-
-//     response.writeHead(filePath.includes("404.html") ? 404 : 200, {
-//       "Content-Type": contentType,
-//     });
-
-//     response.end(isJsonType ? JSON.stringify(data) : data);
-//   } catch (err) {
-//     console.log(err);
-//     myEmitter.emit("log", `${err.name}: ${err.message}`, "errLog.txt");
-//     response.statusCode = 500;
-//     response.end();
-//   }
-// };
-
-// const server = http.createServer((req, res) => {
-//   // Emit log
-//   myEmitter.emit("log", `${req.url}\t${req.method}`, "reqLog.txt");
-//   const extensionReq = path.extname(req.url);
-//   let contentType;
-
-//   switch (extensionReq) {
-//     case ".css":
-//       contentType = "text/css";
-//       break;
-//     case ".js":
-//       contentType = "text/javascript";
-//       break;
-//     case ".json":
-//       contentType = "application/json";
-//       break;
-//     case ".jpg":
-//       contentType = "image/jpeg";
-//       break;
-//     case ".png":
-//       contentType = "image/png";
-//       break;
-//     case ".txt":
-//       contentType = "text/plain";
-//       break;
-//     default:
-//       contentType = "text/html";
-//   }
-
-//   let filePath =
-//     contentType === "text/html" && req.url === "/"
-//       ? path.join(__dirname, "views", "index.html")
-//       : contentType === "text/html" && req.url.slice(-1) === "/"
-//       ? path.join(__dirname, "views", req.url, "index.html")
-//       : contentType === "text/html"
-//       ? path.join(__dirname, "views", req.url)
-//       : path.join(__dirname, req.url);
-
-//   if (!extensionReq && req.url.slice(-1) !== "/") filePath += ".html";
-
-//   const fileExists = fs.existsSync(filePath);
-
-//   if (fileExists) {
-//     serveFile(filePath, contentType, res);
-//   } else {
-//     switch (path.parse(filePath).base) {
-//       case "old-page.html":
-//         res.writeHead(301, { Location: "/new-page.html" });
-//         res.end();
-//         break;
-//       case "www-page.html":
-//         res.writeHead(301, { Location: "/" });
-//         res.end();
-//         break;
-//       default:
-//         serveFile(path.join(__dirname, "views", "404.html"), "text/html", res);
-//     }
-//   }
-// });
-
-// server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const path = require("path");
+const { logger } = require("./middleware/logEvents");
+const errorHandler = require("./middleware/errorHandler");
 const PORT = process.env.PORT || 3500;
 
+app.use(logger);
+const whitelist = ["https://www.youtube.com"];
+const corsOPtions = {
+  origin: (origin, callback) => {
+    // console.log("origin: ", origin);
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOPtions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "/public")));
+
 app.get("/", (req, res) => {
+  // res.send("Hello world");
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-app.get("/new-page.html", (req, res) => {
+app.get("/new-page(.html)?", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "new-page.html"));
 });
+
+app.get("/old-page(.html)?", (req, res) => {
+  res.redirect(301, "/new-page");
+});
+
+// Handle when any path don't have in routers
+app.all("*", (req, res) => {
+  // console.log("req: ", req);
+  // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"));
+  } else if (req.accepts("json")) {
+    res.send({ errorMsg: "404 Not Found!!!" });
+  } else {
+    res.type("txt").send("404 Not Found!!!");
+  }
+});
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
