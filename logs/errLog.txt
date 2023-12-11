@@ -1,1 +1,4 @@
 20231208	10:56:31	f1d2133a-fad6-404d-8e9a-64722491a6ef	SyntaxError: Unexpected token = in JSON at position 0
+20231211	14:29:57	78e6829f-8af4-4b0b-b50b-40b840326fe4	ReferenceError: path is not defined
+20231211	14:30:00	9ba7ec0a-6bb9-4521-95ac-474fcd4de33d	ReferenceError: path is not defined
+20231211	14:30:31	9a338794-27a6-4f1e-8f38-039e940bdb8c	Error: ENOENT: no such file or directory, stat '/Users/macbookpro/Desktop/NODE-2023/routers/views/index.html'
