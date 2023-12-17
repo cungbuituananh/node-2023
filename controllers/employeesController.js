@@ -1,8 +1,13 @@
-const data = {};
-data.employees = require("../model/employees.json");
+const data = {
+  employees: require("../model/employees.json"),
+  setEmployees: function (data) {
+    this.employees = data;
+  },
+};
 
 const getAllEmployees = (req, res) => {
-  res.send();
+  console.log("req: ", req.user);
+  res.json(data.employees);
 };
 
 const createNewEmployee = (req, res) => {

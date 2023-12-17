@@ -7,6 +7,7 @@ const {
   updateEmployee,
   deleteEmployee,
 } = require("../../controllers/employeesController");
+const verifyJWT = require("../../middleware/verifyJWT");
 const data = {};
 data.employess = require("../../model/employees.json");
 
