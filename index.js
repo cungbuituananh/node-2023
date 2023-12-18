@@ -28,6 +28,7 @@ app.use("/refresh", require("./routes/refresh"));
 
 app.use(verifyJWT);
 app.use("/employees", require("./routes/api/employees"));
+app.use("/change-password", require("./routes/api/changePassword"));
 
 // Handle when any path don't have in routers
 app.all("*", (req, res) => {

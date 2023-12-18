@@ -7,17 +7,8 @@ const {
   updateEmployee,
   deleteEmployee,
 } = require("../../controllers/employeesController");
-const verifyJWT = require("../../middleware/verifyJWT");
 const data = {};
 data.employess = require("../../model/employees.json");
-
-// router.get("/", (req, res) => {
-//   res.json(data);
-// });
-
-/**
- * Chain route
- */
 
 router
   .route("/")

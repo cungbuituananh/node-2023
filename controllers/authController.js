@@ -26,14 +26,16 @@ const handleLogin = async (req, res) => {
     const accessToken = jwt.sign(
       {
         username: foundUser.username,
+        roles: foundUser.roles,
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "30s" }
+      { expiresIn: "10m" }
     );
 
     const refreshToken = jwt.sign(
       {
         username: foundUser.username,
+        roles: foundUser.roles,
       },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" }
@@ -94,4 +96,33 @@ const handleLogout = async (req, res) => {
   res.sendStatus(204);
 };
 
-module.exports = { handleLogin, handleLogout };
+const handleChangePw = async (req, res) => {
+  const { username, newPwd, currentPwd } = req.body;
+
+  //TODO: ONLY ADMIN & OWNER ACC can change pw
+  // const ownerAccount = usersDB.users.find((person) => person.username === user);
+  // console.log("ownerAccount: ", ownerAccount);
+  const foundUser = usersDB.users.find(
+    (person) => person.username === username
+  );
+  const otherUsers = usersDB.users.filter(
+    (person) => person.username !== username
+  );
+  // TODO: Need check currentPwd
+  const match = await bcrypt.compare(currentPwd, foundUser.password);
+
+  if (match) {
+    const hashedNewPwd = await bcrypt.hash(newPwd, 10);
+    const _currentUser = { ...foundUser, password: hashedNewPwd };
+    usersDB.setUsers([...otherUsers, _currentUser]);
+    await fsPromises.writeFile(
+      path.join(__dirname, "..", "model", "users.json"),
+      JSON.stringify(usersDB.users)
+    );
+    res.status(200).json({ success: `Change password successful` });
+  } else {
+    res.status(400).json({ message: `The current password does not match.` });
+  }
+};
+
+module.exports = { handleLogin, handleLogout, handleChangePw };

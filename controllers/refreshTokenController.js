@@ -9,7 +9,6 @@ require("dotenv").config();
 
 const handleRefreshToken = (req, res) => {
   const cookies = req.cookies;
-  console.log("cookies: ", cookies);
   if (!cookies?.jwt) return res.sendStatus(401);
   const refreshToken = cookies.jwt;
 
@@ -24,7 +23,7 @@ const handleRefreshToken = (req, res) => {
     const accessToken = jwt.sign(
       { username: decoded.username },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "30s" }
+      { expiresIn: "10m" }
     );
     res.json({ accessToken });
   });
