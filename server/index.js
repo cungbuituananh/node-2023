@@ -26,18 +26,17 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "/public")));
 
 app.use("/", require("./routes/root"));
-app.use("/register", require("./routes/register"));
-app.use("/auth", require("./routes/auth"));
-app.use("/refresh", require("./routes/refresh"));
+app.use("/users", require("./routes/users"));
 
-app.use(verifyJWT);
-app.use("/employees", require("./routes/api/employees"));
-app.use("/change-password", require("./routes/api/changePassword"));
+// app.use("/register", require("./routes/register"));
+// app.use("/auth", require("./routes/auth"));
+// app.use("/refresh", require("./routes/refresh"));
+// app.use(verifyJWT);
+// app.use("/employees", require("./routes/api/employees"));
+// app.use("/change-password", require("./routes/api/changePassword"));
 
 // Handle when any path don't have in routers
 app.all("*", (req, res) => {
-  // console.log("req: ", req);
-  // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
   res.status(404);
   if (req.accepts("html")) {
     res.sendFile(path.join(__dirname, "views", "404.html"));
