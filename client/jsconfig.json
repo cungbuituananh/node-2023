@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "checkJs": true,
+        "allowJs": true,
+        "jsx": "preserve",
+        "baseUrl": "./src",
+        "paths": {
+            "@components": ["common/components"],
+            "@pages": ["page"]
+        }
+    },
+    "include": ["src"]
+}
