@@ -5,6 +5,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+  },
   password: {
     type: String,
     required: true,
@@ -23,11 +26,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  roles: [
-    {
-      type: Number,
-    },
-  ],
+  // roles: [
+  //   {
+  //     type: Number,
+  //   },
+  // ],
 });
 
 module.exports = mongoose.model("User", userSchema);

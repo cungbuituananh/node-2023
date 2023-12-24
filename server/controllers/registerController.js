@@ -2,31 +2,27 @@ const User = require("../model/User");
 const bcrypt = require("bcrypt");
 
 const handleCreateUser = async (req, res) => {
-  const { username, pwd, parentId, phone, active = true, level } = req.body;
+  const { username, password, email } = req.body;
 
-  if (!user || !pwd) {
+  if (!username || !password || !email) {
     return res
       .status(400)
-      .json({ message: "Username and password are required" });
+      .json({ message: "Username/password/email are required" });
   }
 
-  const duplicate = await User.findOne({ username: user }).exec();
+  const duplicate = await User.findOne({ username }).exec();
 
   if (duplicate) {
     return res.status(409).json({ message: "Duplicate username" });
   }
 
-  const hashedPwd = await bcrypt.hash(pwd, 10);
+  const hashedPwd = await bcrypt.hash(password, 10);
   const userObj = {
-    username: user,
+    username,
     password: hashedPwd,
-    parentId: parentId ?? null,
-    phone,
-    active,
-    level,
   };
 
-  const user = await User.create(userObject);
+  const user = await User.create(userObj);
 
   if (user) {
     res.status(201).json({ message: `New user ${username} created` });

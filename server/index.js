@@ -26,10 +26,10 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "/public")));
 
 app.use("/", require("./routes/root"));
-app.use("/users", require("./routes/users"));
+// app.use("/users", require("./routes/users"));
+app.use("/auth", require("./routes/auth"));
+app.use("/register", require("./routes/register"));
 
-// app.use("/register", require("./routes/register"));
-// app.use("/auth", require("./routes/auth"));
 // app.use("/refresh", require("./routes/refresh"));
 // app.use(verifyJWT);
 // app.use("/employees", require("./routes/api/employees"));
