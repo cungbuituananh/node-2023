@@ -10,6 +10,7 @@ function App() {
         {/* public routes */}
         <Route index element={<Public />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Login isLogin={false} />} />
 
         {/* Protected Routes */}
 
