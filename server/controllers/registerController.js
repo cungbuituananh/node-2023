@@ -20,6 +20,7 @@ const handleCreateUser = async (req, res) => {
   const userObj = {
     username,
     password: hashedPwd,
+    email,
   };
 
   const user = await User.create(userObj);
