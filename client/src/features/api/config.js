@@ -5,8 +5,6 @@ const axiosInstance = axios.create();
 // Handle every request
 axiosInstance.interceptors.request.use(
   (config) => {
-    console.log("config: ", config);
-
     return config;
   },
   (err) => {

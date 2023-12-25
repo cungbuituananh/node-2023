@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "themes/Layout";
 import Public from "pages";
-import Login from "pages/Login";
+import Login from "pages/Auth/Login";
 
 function App() {
   return (
@@ -10,6 +10,7 @@ function App() {
         {/* public routes */}
         <Route index element={<Public />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Login isLogin={false} />} />
 
         {/* Protected Routes */}
 
